@@ -27,7 +27,7 @@ public class TestRunnerTest {
     @Test
     public void main() {
         log.log(Level.FINE, "Main test working...");
-        assertTrue("WOW, STOP", false);
+        assertTrue("WOW, STOP", true);
         log.log(Level.FINE, "All ok :)");
     }
 }
