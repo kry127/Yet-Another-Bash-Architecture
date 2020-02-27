@@ -1,0 +1,23 @@
+name: CI
+
+on: [push]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Run a one-line script
+      run: echo Hello, world!
+    - name: Run a multi-line script
+      run: |
+        # uncomment if gradle/wrapper/gradle-wrapper.jar is not persistent
+        # echo Calling "gradle wrapper"
+        # gradle wrapper
+        # echo
+        echo runing tests as "gradle test"
+        gradle test -i
+        echo
+        echo 'deploy (none)'
