@@ -9,11 +9,11 @@ import ru.spb.kry127.yaba.exceptions.SyntaxException;
  * парсер, или вообще SLR парсер, так и ANTLR вообще прикрутим :)
  */
 public interface Parser {
-    /**
-     * Разбирает входную строку на выражения
-     *
-     * @return экземпляр класса разобранного выражения
-     */
-    Executable parseExpression(String input) throws SyntaxException;
+  /**
+   * Разбирает входную строку на выражения
+   *
+   * @return экземпляр класса разобранного выражения
+   */
+  Executable parseExpression(String input) throws SyntaxException;
 
 }

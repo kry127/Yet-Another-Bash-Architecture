@@ -5,4 +5,7 @@ package ru.spb.kry127.yaba.exceptions;
  * Может быть полезен для вывода места ошибки парсинга.
  */
 public class SyntaxException extends Exception {
+  public SyntaxException(String errorMsg) {
+    super(errorMsg);
+  }
 }

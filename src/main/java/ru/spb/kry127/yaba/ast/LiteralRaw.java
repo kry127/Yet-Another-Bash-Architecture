@@ -16,6 +16,6 @@ import java.text.MessageFormat;
  */
 public class LiteralRaw extends Literal {
     public LiteralRaw(String contents) {
-        this.contents = contents;
+      super(contents);
     }
 }

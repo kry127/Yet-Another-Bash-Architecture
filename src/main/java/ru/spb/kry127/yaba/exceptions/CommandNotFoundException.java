@@ -8,16 +8,17 @@ import java.text.MessageFormat;
  * Класс ошибки, которая возникает при обнаружении несуществующей команды.
  */
 public class CommandNotFoundException extends Exception {
-    /**
+
+  private final static String OUTPUT_PATTERN = "Cannot find command {0,string} :(";
+
+  /**
      * У этой ошибки, скорее всего, не может быть причины.
      * Можно добавить второй конструктор, принимающий Throwable
      * по мере надобности
      *
-     * @param expr Выражение, на котором произошла ошибка
+     * @param expr строка, которую следует подставить в шаблон
      */
-    public CommandNotFoundException(Expression expr) {
-        super(MessageFormat.format(
-                "Cannot find command {0,string} :(",
-                expr.toString()));
+    public CommandNotFoundException(String expr) {
+      super(MessageFormat.format(OUTPUT_PATTERN,  expr));
     }
 }

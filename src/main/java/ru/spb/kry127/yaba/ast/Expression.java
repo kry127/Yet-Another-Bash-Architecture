@@ -1,5 +1,6 @@
 package ru.spb.kry127.yaba.ast;
 
+import org.jetbrains.annotations.NotNull;
 import ru.spb.kry127.yaba.io.Environment;
 
 /**
@@ -19,24 +20,25 @@ import ru.spb.kry127.yaba.io.Environment;
  *  смысл, а также операционную семантику. Также, разбираемое
  *  выражение подчиняется грамматике:
  *  <ul>
- *   <li>S ::= Assignment=Pipe | Pipe</li>
+ *   <li>S ::= Pipe | LiteralQualified=Pipe</li>
  *   <li>Pipe ::= Command | Command[|Pipe]</li>
- *   <li>Command ::= Name ParameterList</li>
- *   <li>ParameterList ::= ParameterQualified | Parameter ParameterList</li>
- *   <li>ParameterQualified ::= Parameter | "Parameter" | 'Parameter'</li>
- *   <li>Paramter ::= /([^"'] | \' | \")+/</li>
+ *   <li>Command ::= Name | Name LiteralList</li>
+ *   <li>LiteralList ::= LiteralConcat | LiteralConcat LiteralList</li>
+ *   <li>LiteralConcat ::= LiteralQualified | LiteralQualified.LiteralConcat</li>
+ *   <li>LiteralQualified ::= Literal | "Literal" | 'Literal'</li>
+ *   <li>Literal ::= /([^"'] | \' | \")+/</li>
  *  </ul>
  * <p>
  *  Грамматический разбор происходит после всех интерполяций
  */
 public interface Expression {
 
-    /**
-     * Метод производит интерполяцию оператора подстановки '$', т.е.
-     * просматривает инстансы Interpolation
-     *
-     * @param environment Окружение, в котором происходит подстановка
-     * @return Строка, полученная после интерполяции выражения
-     */
-    String interpolate(Environment environment);
+  /**
+   * Метод производит интерполяцию оператора подстановки '$', т.е.
+   * просматривает инстансы Interpolation
+   *
+   * @param environment Окружение, в котором происходит подстановка
+   * @return Строка, полученная после интерполяции выражения
+   */
+  String interpolate(@NotNull Environment environment);
 }

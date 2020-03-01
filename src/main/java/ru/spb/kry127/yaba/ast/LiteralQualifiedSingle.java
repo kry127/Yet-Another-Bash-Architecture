@@ -9,8 +9,8 @@ import java.text.MessageFormat;
  */
 public class LiteralQualifiedSingle extends Literal {
 
-    public LiteralQualifiedSingle(String contents) {
-        this.contents = contents;
+    protected LiteralQualifiedSingle(String contents) {
+      super(contents);
     }
 
     @Override

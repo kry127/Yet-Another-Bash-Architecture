@@ -10,7 +10,7 @@ import java.text.MessageFormat;
  * Класс-выражение, который определяет, что результат справа от знака "="
  * должен быть записан в переменную среды
  */
-public class Assignment implements Executable {
+public class Assignment implements ExecutableExpr {
     private final Environment environment;
     private final String environmentVariable;
     private Expression expression;
@@ -46,17 +46,17 @@ public class Assignment implements Executable {
     }
 
     @Override
-    public void execute(InputStream in, OutputStream out, OutputStream err)
+    public void execute(InputStream in, PrintStream out, PrintStream err)
                                throws CommandNotFoundException, IOException {
         if (expression instanceof Executable) {
-            OutputStream os = new ByteArrayOutputStream();
-            ((Executable) expression).execute(in, os, err);
-            final String exprResult = os.toString();
-            this.environment.setEnvVariable(environmentVariable, exprResult);
+          PrintStream os = new PrintStream(new ByteArrayOutputStream());
+          ((Executable) expression).execute(in, os, err);
+          final String exprResult = os.toString();
+          this.environment.setEnvVariable(environmentVariable, exprResult);
         } else if (expression instanceof Literal) {
             this.environment.setEnvVariable(environmentVariable, expression.toString());
         } else {
-            throw new CommandNotFoundException(expression);
+            throw new CommandNotFoundException(expression.toString());
         }
     }
 }

@@ -9,11 +9,9 @@ import java.text.MessageFormat;
  */
 public class LiteralQualifiedDouble extends Literal {
 
-    private final String contents;
-
-    public LiteralQualifiedDouble(String contents) {
-        this.contents = contents;
-    }
+  protected LiteralQualifiedDouble(String contents) {
+    super(contents);
+  }
 
     @Override
     public String interpolate(Environment environment) {
