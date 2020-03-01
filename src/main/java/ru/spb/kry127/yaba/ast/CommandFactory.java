@@ -22,11 +22,11 @@ import java.util.concurrent.Executors;
  */
 public class CommandFactory {
 
-  private static final String COMMAND_CAT = "cat";
-  private static final String COMMAND_ECHO = "echo";
-  private static final String COMMAND_WC = "wc";
-  private static final String COMMAND_PWD = "pwd";
-  private static final String COMMAND_EXIT = "exit";
+  public static final String COMMAND_CAT = "cat";
+  public static final String COMMAND_ECHO = "echo";
+  public static final String COMMAND_WC = "wc";
+  public static final String COMMAND_PWD = "pwd";
+  public static final String COMMAND_EXIT = "exit";
 
   private static final OsUtils osUtils;
 
@@ -80,7 +80,6 @@ public class CommandFactory {
               throws CommandNotFoundException, IOException {
             String[] argv = getArgv();
             if (argv.length == 0) {
-              out.println();
               return;
             }
             out.print(argv[0]);
@@ -88,6 +87,7 @@ public class CommandFactory {
               out.print(' ');
               out.print(argv[i]);
             }
+            out.println();
           }
         };
       // End case of COMMAND_ECHO
@@ -145,28 +145,23 @@ public class CommandFactory {
             OutputStream poutput = p.getOutputStream();
             InputStream perror = p.getErrorStream();
 
-            // данные команды должны запускаться асинхронно
-            // https://stackoverflow.com/a/51006865
-            ExecutorService threadPool = Executors.newFixedThreadPool(10);
-            CompletableFuture<?> futureIn = (CompletableFuture<?>)
-                threadPool.submit(() -> {
-                  osUtils.redirectIOStreams(in, poutput);
-                });
-            CompletableFuture<?> futureOut = (CompletableFuture<?>)
-                threadPool.submit(() -> {
-                  osUtils.redirectIOStreams(pinput, out);
-                });
-            CompletableFuture<?> futureErr = (CompletableFuture<?>)
-                threadPool.submit(() -> {
-                  osUtils.redirectIOStreams(perror, err);
-                });
+            OsUtils osUtils = OsUtilsProvider.getUtilsProvider();
+            // blocking call
+            try {
+              while(p.isAlive()) {
+                // one iteration
+                osUtils.redirectIOStdStreams(poutput, out, err, in, pinput, perror);
+              }
+              p.waitFor();
+            } catch (InterruptedException e) {
+              err.println("Command '" + execName + "' was interrupted");
+            }
 
-            // барьер синхронизации
-            CompletableFuture.allOf(futureIn, futureOut, futureErr).join();
+            p.destroy();
 
-            pinput.close();
-            poutput.close();
-            perror.close();
+//            pinput.close();
+//            poutput.close();
+//            perror.close();
           }
         };
     }

@@ -17,6 +17,13 @@ public interface OsUtils {
    */
   void redirectIOStreams(@NotNull InputStream in, @NotNull OutputStream out);
 
+  void redirectIOStdStreams(@NotNull OutputStream outStream1,
+                            @NotNull OutputStream outStream2,
+                            @NotNull OutputStream outStream3,
+                            @NotNull InputStream inStream1,
+                            @NotNull InputStream inStream2,
+                            @NotNull InputStream inStream3);
+
   /**
    * Проверяет наличие программы в переменной окружения и
    * возвращает путь, если он существует.

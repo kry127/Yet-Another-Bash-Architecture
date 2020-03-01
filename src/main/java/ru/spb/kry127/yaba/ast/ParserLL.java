@@ -28,6 +28,7 @@ public class ParserLL implements Parser {
   final static Pattern RAW_QUALIFIED_REGEX = Pattern.compile("^([^\\s\"']+)");
   final static Pattern PIPE_REGEX = Pattern.compile("^\\s*\\|\\s*");
   final static Pattern EMPTY_REGEX = Pattern.compile("^\\s*");
+  final static Pattern NONEMPTY_REGEX = Pattern.compile("\\S");
 
   private Environment environment;
 
@@ -59,6 +60,11 @@ public class ParserLL implements Parser {
   public ExecutableExpr parseExpression(@NotNull String input) throws SyntaxException {
     // единственным публичным методом интерфейса Parser
     // наконец возвращаем результат парсинга
+    if (isEmpty(input)) {
+      Command echo = CommandFactory.getCommand(CommandFactory.COMMAND_ECHO);
+      echo.setArgs(new LiteralConcat[0]);
+      return echo;
+    }
     return buildAst(input);
   }
 
@@ -128,8 +134,14 @@ public class ParserLL implements Parser {
       return new InformationBundle<>(pipeAssignment, rest);
     }
 
-    // если дошли до сюда, то распарсить не получилось
-    throw new SyntaxException("Assignment syntax corruption");
+    // если дошли до сюда, то распарсить как присвоение переменной окружения
+    // не получилось -- пробуем распарсить как пайп целиком
+    // теперь попытаемся распарсить его как пайп
+    // но уже без отлова исключения, так как это второй и последний кейс
+    InformationBundle<ExecutableExpr> pip = parsePipe(input);
+    rest = pip.rest;
+    ExecutableExpr pipe = pip.expression;
+    return new InformationBundle<>(pipe, rest);
   }
 
 
@@ -217,7 +229,7 @@ public class ParserLL implements Parser {
 
     // composing Command with factory class
     Command cmd = CommandFactory.getCommand(program_name.getRawContents());
-    cmd.setArgs((LiteralConcat[]) argv.toArray());
+    cmd.setArgs(argv.toArray(new LiteralConcat[0]));
     return new InformationBundle<>(cmd, rest);
   }
 
@@ -258,23 +270,23 @@ public class ParserLL implements Parser {
     Matcher matcherRaw = RAW_QUALIFIED_REGEX.matcher(input);
 
     if (matcherDouble.find()) {
-      String rawValue = matcherDouble.group(0);
+      String rawValue = matcherDouble.group(1);
       Literal lqd = new LiteralQualifiedDouble(rawValue);
       int end = matcherDouble.end();
       return new InformationBundle<>(lqd, input.substring(end));
     }
 
     if (matcherSingle.find()) {
-      String rawValue = matcherSingle.group(0);
+      String rawValue = matcherSingle.group(1);
       Literal lqs = new LiteralQualifiedSingle(rawValue);
       int end = matcherSingle.end();
       return new InformationBundle<>(lqs, input.substring(end));
     }
 
     if (matcherRaw.find()) {
-      String rawValue = matcherSingle.group(0);
+      String rawValue = matcherRaw.group(0);
       Literal lr = new LiteralRaw(rawValue);
-      int end = matcherSingle.end();
+      int end = matcherRaw.end();
       return new InformationBundle<>(lr, input.substring(end));
     }
 
@@ -306,7 +318,7 @@ public class ParserLL implements Parser {
    * @return true, если строка является пустой (населённой пробелами)
    */
   private boolean isEmpty(String s) {
-    Matcher matcherEmpty = EMPTY_REGEX.matcher(s);
-    return matcherEmpty.find();
+    Matcher matcherEmpty = NONEMPTY_REGEX.matcher(s);
+    return !matcherEmpty.find();
   }
 }

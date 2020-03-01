@@ -65,7 +65,7 @@ public abstract class Command implements ExecutableExpr {
     for (LiteralConcat arg : args) {
       argv.add(arg.getRawContents());
     }
-    return (String[]) argv.toArray();
+    return argv.toArray(new String[0]);
   }
 
   /**

@@ -13,18 +13,27 @@ import ru.spb.kry127.yaba.io.SystemReaderProvider;
 
 import java.io.IOException;
 import java.io.PrintStream;
+import java.util.NoSuchElementException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class Program implements CommandPipeline {
 
-  private SystemReader systemReader;
-  private Environment environment;
-  private Parser parser;
+  private final static String PROMPT = " YABA 8===> ";
+
+  private final SystemReader systemReader;
+  private final Environment environment;
+  private final Parser parser;
+
+  private final Logger logger;
 
   Program() {
     // определяем, какие реализации интерфейсов будем использовать в программе
     systemReader = SystemReaderProvider.getSystemReader();
     environment = EnvironmentProvider.getEnvironment();
     parser = new ParserLL(environment);
+    // также заводим логгер
+    logger = Logger.getLogger(Program.class.getName());
   }
 
   /**
@@ -35,6 +44,8 @@ public class Program implements CommandPipeline {
    * @throws CommandNotFoundException
    */
   private void readEvalPrint() throws SyntaxException, IOException, CommandNotFoundException {
+    // Выводим prompt
+    systemReader.getOutStream().print(PROMPT);
     // читаем входную строку
     String line = systemReader.getLine();
     // разбираем её парсером
@@ -59,6 +70,10 @@ public class Program implements CommandPipeline {
         readEvalPrint();
       } catch (SyntaxException | IOException | CommandNotFoundException e) {
         errOutput.println(e.getMessage());
+      } catch (NoSuchElementException e) {
+        // Возникает, когда консоль закрывается
+        logger.log(Level.WARNING, e.toString());
+        System.exit(1);
       }
     }
   }

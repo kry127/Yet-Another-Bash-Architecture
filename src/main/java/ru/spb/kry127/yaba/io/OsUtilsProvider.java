@@ -53,6 +53,41 @@ public class OsUtilsProvider implements OsUtils {
     }
   }
 
+  @Override
+  public void redirectIOStdStreams(@NotNull OutputStream outStream1,
+                                   @NotNull OutputStream outStream2,
+                                   @NotNull OutputStream outStream3,
+                                   @NotNull InputStream inStream1,
+                                   @NotNull InputStream inStream2,
+                                   @NotNull InputStream inStream3) {
+
+    byte[] buffer = new byte[BUFFER_SIZE];
+    int len;
+
+    try {
+      if ((len = inStream2.read(buffer)) != -1) {
+        outStream2.write(buffer, 0, len);
+      } else {
+        return;
+      }
+    } catch (IOException ex) {
+    }
+    try {
+      if ((len = inStream3.read(buffer)) != -1) {
+        outStream3.write(buffer, 0, len);
+      } else {
+        return;
+      }
+    } catch (IOException ex) {
+    }
+    try {
+      if ((len = inStream1.read(buffer)) != -1) {
+        outStream1.write(buffer, 0, len);
+      }
+    } catch (IOException ex) {
+    }
+  }
+
   /**
    * Проверяет наличие программы в переменной окружения и
    * возвращает путь, если он существует.
