@@ -6,8 +6,8 @@ package ru.spb.kry127.yaba;
  */
 public interface CommandPipeline extends Runnable {
 
-    /**
-     * Блокирующий вызов -- запуск программы в режиме REPL
-     */
-    void run();
+  /**
+   * Блокирующий вызов -- запуск программы в режиме REPL
+   */
+  void run();
 }

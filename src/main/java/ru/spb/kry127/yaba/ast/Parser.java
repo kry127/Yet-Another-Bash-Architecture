@@ -14,6 +14,6 @@ public interface Parser {
    *
    * @return экземпляр класса разобранного выражения
    */
-  Executable parseExpression(String input) throws SyntaxException;
+  ExecutableExpr parseExpression(String input) throws SyntaxException;
 
 }

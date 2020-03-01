@@ -9,13 +9,13 @@ import java.text.MessageFormat;
  */
 public class LiteralQualifiedSingle extends Literal {
 
-    protected LiteralQualifiedSingle(String contents) {
-      super(contents);
-    }
+  protected LiteralQualifiedSingle(String contents) {
+    super(contents);
+  }
 
-    @Override
-    public String interpolate(Environment environment) {
-        final String interpolated = super.interpolate(environment);
-        return MessageFormat.format("'{0}'", interpolated);
-    }
+  @Override
+  public String interpolate(Environment environment) {
+    final String interpolated = super.interpolate(environment);
+    return MessageFormat.format("'{0}'", interpolated);
+  }
 }

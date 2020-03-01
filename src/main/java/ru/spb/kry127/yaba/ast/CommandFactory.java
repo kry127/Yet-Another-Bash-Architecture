@@ -2,13 +2,17 @@ package ru.spb.kry127.yaba.ast;
 
 import org.jetbrains.annotations.NotNull;
 import ru.spb.kry127.yaba.exceptions.CommandNotFoundException;
+import ru.spb.kry127.yaba.io.Environment;
+import ru.spb.kry127.yaba.io.EnvironmentProvider;
+import ru.spb.kry127.yaba.io.OsUtils;
 import ru.spb.kry127.yaba.io.OsUtilsProvider;
-import ru.spb.kry127.yaba.io.OsUtilsProviderImpl;
 
 import java.io.*;
 import java.nio.file.Path;
 import java.text.MessageFormat;
-import java.util.concurrent.*;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 /**
  * Класс-фабрика для построения команд. Необходим для того, чтобы
@@ -24,10 +28,10 @@ public class CommandFactory {
   private static final String COMMAND_PWD = "pwd";
   private static final String COMMAND_EXIT = "exit";
 
-  private static final OsUtilsProvider osUtils;
+  private static final OsUtils osUtils;
 
   static {
-    osUtils = OsUtilsProviderImpl.getUtilsProvider();
+    osUtils = OsUtilsProvider.getUtilsProvider();
   }
 
   /**
@@ -131,8 +135,9 @@ public class CommandFactory {
             System.arraycopy(oldArgv, 0, newArgv, 1, oldArgv.length);
 
             // пробуем вызвать внешнюю программу
-            // TODO прокинуть Environment в создаваемый процесс
+            Environment env = EnvironmentProvider.getEnvironment();
             ProcessBuilder builder = new ProcessBuilder(newArgv);
+            builder.environment().putAll(env.getFullEnvironment());
 
             Process p = builder.start();
 
@@ -145,19 +150,19 @@ public class CommandFactory {
             ExecutorService threadPool = Executors.newFixedThreadPool(10);
             CompletableFuture<?> futureIn = (CompletableFuture<?>)
                 threadPool.submit(() -> {
-              osUtils.redirectIOStreams(in, poutput);
-            });
+                  osUtils.redirectIOStreams(in, poutput);
+                });
             CompletableFuture<?> futureOut = (CompletableFuture<?>)
                 threadPool.submit(() -> {
-              osUtils.redirectIOStreams(pinput, out);
-            });
+                  osUtils.redirectIOStreams(pinput, out);
+                });
             CompletableFuture<?> futureErr = (CompletableFuture<?>)
                 threadPool.submit(() -> {
-              osUtils.redirectIOStreams(perror, err);
-            });
+                  osUtils.redirectIOStreams(perror, err);
+                });
 
             // барьер синхронизации
-            CompletableFuture.allOf(futureIn,futureOut,futureErr).join();
+            CompletableFuture.allOf(futureIn, futureOut, futureErr).join();
 
             pinput.close();
             poutput.close();

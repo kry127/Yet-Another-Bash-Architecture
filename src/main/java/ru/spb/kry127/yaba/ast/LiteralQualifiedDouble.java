@@ -13,10 +13,10 @@ public class LiteralQualifiedDouble extends Literal {
     super(contents);
   }
 
-    @Override
-    public String interpolate(Environment environment) {
-        final String interpolated = super.interpolate(environment);
-        // TODO fix escaped symbols
-        return MessageFormat.format("\"{0}\"", interpolated);
-    }
+  @Override
+  public String interpolate(Environment environment) {
+    final String interpolated = super.interpolate(environment);
+    // TODO fix escaped symbols
+    return MessageFormat.format("\"{0}\"", interpolated);
+  }
 }

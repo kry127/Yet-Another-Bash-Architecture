@@ -31,7 +31,7 @@ public class ParserLL implements Parser {
 
   private Environment environment;
 
-  ParserLL(Environment environment) {
+  public ParserLL(Environment environment) {
     this.environment = environment;
   }
 
@@ -56,7 +56,7 @@ public class ParserLL implements Parser {
 
   @Override
   @NotNull
-  public Executable parseExpression(@NotNull String input) throws SyntaxException {
+  public ExecutableExpr parseExpression(@NotNull String input) throws SyntaxException {
     // единственным публичным методом интерфейса Parser
     // наконец возвращаем результат парсинга
     return buildAst(input);

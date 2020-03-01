@@ -1,6 +1,7 @@
 package ru.spb.kry127.yaba.io;
 
-import java.io.OutputStream;
+import java.io.InputStream;
+import java.io.PrintStream;
 
 /**
  * Класс-обёртка для абстракции системного потока ввода вывода.
@@ -10,20 +11,25 @@ import java.io.OutputStream;
  * потока ошибок.
  */
 public interface SystemReader {
-    /**
-     * Получает очередную строку из потока ввода.
-     *
-     * @return строка, введённая пользователем
-     */
-    String getLine();
+  /**
+   * Получает очередную строку из потока ввода.
+   *
+   * @return строка, введённая пользователем
+   */
+  String getLine();
 
-    /**
-     * @return стандартный поток вывода.
-     */
-    OutputStream getOutStream();
+  /**
+   * @return стандартный поток ввода.
+   */
+  public InputStream getInStream();
 
-    /**
-     * @return стандартный поток ошибок.
-     */
-    OutputStream getErrStream();
+  /**
+   * @return стандартный поток вывода.
+   */
+  PrintStream getOutStream();
+
+  /**
+   * @return стандартный поток ошибок.
+   */
+  PrintStream getErrStream();
 }
