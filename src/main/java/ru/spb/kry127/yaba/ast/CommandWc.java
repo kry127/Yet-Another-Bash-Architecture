@@ -16,7 +16,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  */
 public class CommandWc extends Command {
 
-  private final static String OUTPUT_PATTERN = "{0:integer} {1:integer} {2:integer} {3:string}";
+  private final static String OUTPUT_PATTERN = "\t\t{0}\t\t{1}\t\t{2}\t\t{3}";
   private final static String ERROR_PATTERN = "{0}: {1}: No such file or directory";
 
   protected CommandWc(String name) {

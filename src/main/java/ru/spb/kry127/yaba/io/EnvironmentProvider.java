@@ -30,7 +30,11 @@ public class EnvironmentProvider implements Environment {
 
   @Override
   public String getEnvVariable(String name) {
-    return map.get(name);
+    String envVariable = map.get(name);
+    if (envVariable != null) {
+      return envVariable;
+    }
+    return "";
   }
 
   @Override

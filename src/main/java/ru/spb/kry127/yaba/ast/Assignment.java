@@ -46,7 +46,7 @@ public class Assignment implements ExecutableExpr {
   @Override
   public String interpolate(Environment exec_environment) {
     return MessageFormat.format(
-        "{0,string}={1}",
+        "{0}={1}",
         environmentVariable, expression.interpolate(exec_environment));
   }
 
@@ -58,8 +58,8 @@ public class Assignment implements ExecutableExpr {
       ((Executable) expression).execute(in, os, err);
       final String exprResult = os.toString();
       this.environment.setEnvVariable(environmentVariable, exprResult);
-    } else if (expression instanceof Literal) {
-      this.environment.setEnvVariable(environmentVariable, expression.toString());
+    } else if (expression instanceof LiteralConcat) {
+      this.environment.setEnvVariable(environmentVariable, ((LiteralConcat) expression).getRawContents());
     } else {
       throw new CommandNotFoundException(expression.toString());
     }

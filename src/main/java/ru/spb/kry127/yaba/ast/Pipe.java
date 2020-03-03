@@ -5,8 +5,7 @@ import ru.spb.kry127.yaba.io.Environment;
 
 import java.io.*;
 import java.text.MessageFormat;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+import java.util.concurrent.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -42,13 +41,13 @@ public class Pipe implements ExecutableExpr {
       throws CommandNotFoundException, IOException {
     // создаём неименованный канал в оперативной памяти
     PipedOutputStream pos = new PipedOutputStream();
-    PipedInputStream pis = new PipedInputStream(pos, 1024);
+    PipedInputStream pis = new PipedInputStream(pos, 8192);
     PrintStream posPrinter = new PrintStream(pos);
-    cmdLeft.execute(in, posPrinter, err);
+    final Logger log = Logger.getLogger(Pipe.class.getName());
+
     // делаем цепочку из пайпов
-    ExecutorService threadPool = Executors.newFixedThreadPool(10);
-    threadPool.execute(() -> {
-      final Logger log = Logger.getLogger(Pipe.class.getName());
+
+    Runnable runnable = () -> {
       final PrintStream eps = new PrintStream(err);
       try {
         cmdRight.execute(pis, out, err);
@@ -62,16 +61,40 @@ public class Pipe implements ExecutableExpr {
         log.log(Level.SEVERE, "Exception happened in pipe thread!!");
         e.printStackTrace(eps);
       }
-    });
+    };
+
+    Thread myThread = new Thread(runnable);
+    myThread.start();
+
+    // только после старта второй команды запускаем первую!
+    cmdLeft.execute(in, posPrinter, err);
+
+    synchronized (posPrinter) {
+      posPrinter.flush();
+    }
+    synchronized (pos) {
+      pos.flush();
+    }
+    pis.close();
+
+
+    // закрываем пайпы, чтобы показать, что мы сделали работу
     pos.close();
     pis.close();
     posPrinter.close();
+
+    try {
+      myThread.join();
+    } catch (InterruptedException e) {
+      log.log(Level.WARNING, "Piped thread has been interrupted!");
+    }
+
   }
 
   @Override
   public String interpolate(Environment environment) {
     return MessageFormat.format(
-        "{0,string}|{1,string}",
+        "{0}|{1}",
         cmdLeft.interpolate(environment), cmdRight.interpolate(environment));
   }
 }

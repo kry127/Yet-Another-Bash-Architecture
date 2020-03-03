@@ -2,8 +2,6 @@ package ru.spb.kry127.yaba.ast;
 
 import ru.spb.kry127.yaba.io.Environment;
 
-import java.text.MessageFormat;
-
 /**
  * Класс-выражение, инкапсулирующий одинарные кавычки.
  */

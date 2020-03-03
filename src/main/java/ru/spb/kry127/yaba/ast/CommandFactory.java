@@ -10,9 +10,6 @@ import ru.spb.kry127.yaba.io.OsUtilsProvider;
 import java.io.*;
 import java.nio.file.Path;
 import java.text.MessageFormat;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 /**
  * Класс-фабрика для построения команд. Необходим для того, чтобы
@@ -146,22 +143,34 @@ public class CommandFactory {
             InputStream perror = p.getErrorStream();
 
             OsUtils osUtils = OsUtilsProvider.getUtilsProvider();
+            Runnable runnable2 = osUtils.ioStreamsRedirector(pinput, out, "stdout");
+            Runnable runnable3 = osUtils.ioStreamsRedirector(perror, err, "stderr");
+
+            Thread thread2 = new Thread(runnable2);
+            Thread thread3 = new Thread(runnable3);
+
+            thread2.start();
+            thread3.start();
+
             // blocking call
             try {
-              while(p.isAlive()) {
-                // one iteration
-                osUtils.redirectIOStdStreams(poutput, out, err, in, pinput, perror);
+              while (p.isAlive()) {
+                osUtils.redirectIOStreams(in, poutput);
               }
               p.waitFor();
+              // manually terminate first thread
+              thread2.interrupt();
+              thread3.interrupt();
             } catch (InterruptedException e) {
               err.println("Command '" + execName + "' was interrupted");
+            } finally {
+              pinput.close();
+              poutput.close();
+              perror.close();
             }
 
             p.destroy();
 
-//            pinput.close();
-//            poutput.close();
-//            perror.close();
           }
         };
     }

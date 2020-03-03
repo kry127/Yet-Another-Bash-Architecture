@@ -6,6 +6,7 @@ import org.jetbrains.annotations.Nullable;
 import java.io.*;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
@@ -53,6 +54,16 @@ public class OsUtilsProvider implements OsUtils {
     }
   }
 
+  @Override
+  @NotNull
+  public Runnable ioStreamsRedirector(@NotNull InputStream in, @NotNull OutputStream out, String name) {
+    return () -> {
+        redirectIOStreams(in, out);
+        logger.log(Level.INFO, "Redirector stop... " + String.valueOf(name));
+    };
+  }
+
+  @Deprecated
   @Override
   public void redirectIOStdStreams(@NotNull OutputStream outStream1,
                                    @NotNull OutputStream outStream2,

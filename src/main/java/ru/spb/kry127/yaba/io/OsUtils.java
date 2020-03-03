@@ -17,6 +17,10 @@ public interface OsUtils {
    */
   void redirectIOStreams(@NotNull InputStream in, @NotNull OutputStream out);
 
+  @NotNull
+  @Deprecated
+  public Runnable ioStreamsRedirector(@NotNull InputStream in, @NotNull OutputStream out, String name);
+
   void redirectIOStdStreams(@NotNull OutputStream outStream1,
                             @NotNull OutputStream outStream2,
                             @NotNull OutputStream outStream3,

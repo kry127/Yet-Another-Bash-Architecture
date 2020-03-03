@@ -25,7 +25,7 @@ public class ParserLL implements Parser {
    */
   final static Pattern DOUBLE_QUALIFIED_REGEX = Pattern.compile("^\"([^\"\\\\]*(?:\\\\.[^\"\\\\]*)*)\"");
   final static Pattern SINGLE_QUALIFIED_REGEX = Pattern.compile("^'([^'\\\\]*(?:\\\\.[^'\\\\]*)*)'");
-  final static Pattern RAW_QUALIFIED_REGEX = Pattern.compile("^([^\\s\"']+)");
+  final static Pattern RAW_QUALIFIED_REGEX = Pattern.compile("^([^\\s\"'|=]+)");
   final static Pattern PIPE_REGEX = Pattern.compile("^\\s*\\|\\s*");
   final static Pattern EMPTY_REGEX = Pattern.compile("^\\s*");
   final static Pattern NONEMPTY_REGEX = Pattern.compile("\\S");
@@ -109,6 +109,7 @@ public class ParserLL implements Parser {
     if (rest.length() > 0 && rest.charAt(0) == '=') {
       // да, действительно, это присвоение переменной среды
       // тут может быть либо пайп (команда), либо литерал
+      rest = rest.substring(1);
       try {
         // здесь может упасть, тогда это не просто литерал
         InformationBundle<LiteralConcat> ibconcat = parseLiteral(rest);
