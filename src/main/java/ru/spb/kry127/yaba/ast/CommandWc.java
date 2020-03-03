@@ -19,7 +19,7 @@ public class CommandWc extends Command {
   private final static String OUTPUT_PATTERN = "\t\t{0}\t\t{1}\t\t{2}\t\t{3}";
   private final static String ERROR_PATTERN = "{0}: {1}: No such file or directory";
 
-  protected CommandWc(String name) {
+  protected CommandWc(LiteralConcat name) {
     super(name);
   }
 

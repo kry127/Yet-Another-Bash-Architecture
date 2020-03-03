@@ -12,7 +12,8 @@ import java.util.List;
  */
 public abstract class Command implements ExecutableExpr {
 
-  private final String commandName;
+  // Тут стоял String, и это была архитектурная ошибка, она стоила дорого
+  private LiteralConcat commandName;
   private LiteralConcat[] args;
   private Executable action;
   private boolean internal;
@@ -23,7 +24,7 @@ public abstract class Command implements ExecutableExpr {
    *
    * @param name Имя конструируемой комманды
    */
-  protected Command(@NotNull String name) {
+  protected Command(@NotNull LiteralConcat name) {
     this(name, true);
   }
 
@@ -33,7 +34,7 @@ public abstract class Command implements ExecutableExpr {
    * @param name       имя конструируемой комманды
    * @param isInternal является ли команда встроенной в интерпретатор
    */
-  protected Command(@NotNull String name, boolean isInternal) {
+  protected Command(@NotNull LiteralConcat name, boolean isInternal) {
     commandName = name;
     internal = isInternal;
   }
@@ -50,7 +51,10 @@ public abstract class Command implements ExecutableExpr {
    */
   @NotNull
   public final String getCommandName() {
-    return commandName;
+    // хорошо, что мы предусмотрели геттер для поля,
+    // которое поменяло тип, и нам придётся поменять только маленький
+    // участок кода :)
+    return commandName.getRawContents();
   }
 
   /**
@@ -81,7 +85,8 @@ public abstract class Command implements ExecutableExpr {
   @NotNull
   public String interpolate(@NotNull Environment environment) {
     StringBuilder sb = new StringBuilder();
-    sb.append(getCommandName());
+    String interpolatedCmdName = commandName.interpolate(environment);
+    sb.append(interpolatedCmdName);
     for (LiteralConcat arg : args) {
       sb.append(' ');
       sb.append(arg.interpolate(environment));

@@ -53,4 +53,13 @@ public class LiteralConcat implements Expression {
     }
     return sb.toString();
   }
+
+  /**
+   * Статический метод предназначен облегчить приведение
+   * стоки <tt>java.lang.String</tt> к типу LiteralConcat
+   * @return
+   */
+  public static LiteralConcat fromString(String s) {
+    return new LiteralConcat(new LiteralRaw(s));
+  }
 }

@@ -61,7 +61,7 @@ public class ParserLL implements Parser {
     // единственным публичным методом интерфейса Parser
     // наконец возвращаем результат парсинга
     if (isEmpty(input)) {
-      Command echo = CommandFactory.getCommand(CommandFactory.COMMAND_ECHO);
+      Command echo = new CommandEcho(LiteralConcat.fromString(""));
       echo.setArgs(new LiteralConcat[0]);
       return echo;
     }
@@ -229,7 +229,7 @@ public class ParserLL implements Parser {
     }
 
     // composing Command with factory class
-    Command cmd = CommandFactory.getCommand(program_name.getRawContents());
+    Command cmd = CommandFactory.getCommand(program_name);
     cmd.setArgs(argv.toArray(new LiteralConcat[0]));
     return new InformationBundle<>(cmd, rest);
   }

@@ -69,24 +69,19 @@ public class Pipe implements ExecutableExpr {
     // только после старта второй команды запускаем первую!
     cmdLeft.execute(in, posPrinter, err);
 
-    synchronized (posPrinter) {
-      posPrinter.flush();
-    }
-    synchronized (pos) {
-      pos.flush();
-    }
-    pis.close();
-
-
-    // закрываем пайпы, чтобы показать, что мы сделали работу
-    pos.close();
-    pis.close();
+    // флашим output левой команды:
+    posPrinter.flush();
     posPrinter.close();
+    // эта операция позволит myThread завершить свою работу!
 
     try {
-      myThread.join();
+      myThread.join(); // ожидаем окончания работы потока
     } catch (InterruptedException e) {
       log.log(Level.WARNING, "Piped thread has been interrupted!");
+    } finally {
+      // закрываем оставшиеся ресурсы
+      pos.close();
+      pis.close();
     }
 
   }
