@@ -14,9 +14,8 @@ public class LiteralQualifiedSingle extends Literal {
 
   @Override
   public String interpolate(@NotNull Environment environment) {
-    final String interpolated = super.interpolate(environment);
     // not working
     // return MessageFormat.format("'{0}'", interpolated);
-    return "'" + interpolated + "'";
+    return "'" + super.getRawContents() + "'";
   }
 }

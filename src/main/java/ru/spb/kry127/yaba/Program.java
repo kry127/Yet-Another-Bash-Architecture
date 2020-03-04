@@ -28,13 +28,18 @@ public class Program implements CommandPipeline {
 
   private final Logger logger;
 
-  Program() {
+  Program(SystemReader systemReader, Environment environment, Parser parser, boolean logging) {
     // определяем, какие реализации интерфейсов будем использовать в программе
-    systemReader = SystemReaderProvider.getSystemReader();
-    environment = EnvironmentProvider.getEnvironment();
-    parser = new ParserLL(environment);
+    this.systemReader = systemReader;
+    this.environment = environment;
+    this.parser = parser;
     // также заводим логгер
     logger = Logger.getLogger(Program.class.getName());
+    if (!logging) {
+      // если необходимо отключить логгинг глобально, можно использовать:
+      LogManager.getLogManager().reset();
+    }
+
   }
 
   /**
@@ -65,11 +70,11 @@ public class Program implements CommandPipeline {
     );
   }
 
+  /**
+   * Функция основного цикла нашего REPL-интерпретатора
+   */
   @Override
   public void run() {
-    // если необходимо отключить логгинг, можно использовать:
-    LogManager.getLogManager().reset();
-
     PrintStream errOutput = systemReader.getErrStream();
     while (true) {
       try {
@@ -90,7 +95,10 @@ public class Program implements CommandPipeline {
    * @param args Аргументы командной строки. Игнорируются.
    */
   public static void main(String[] args) {
-    Program mainProgram = new Program();
+    final SystemReader systemReader = SystemReaderProvider.getSystemReader();
+    final Environment environment = EnvironmentProvider.getEnvironment();
+    final Parser parser = new ParserLL(environment);
+    Program mainProgram = new Program(systemReader, environment, parser, false);
     mainProgram.run(); // run, forest, run
   }
 
