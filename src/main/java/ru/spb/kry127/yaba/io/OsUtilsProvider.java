@@ -50,7 +50,8 @@ public class OsUtilsProvider implements OsUtils {
         out.write(buffer, 0, len);
       }
     } catch (IOException ex) {
-
+      logger.log(Level.WARNING, "Redirector exception ");
+      logger.log(Level.WARNING, ex.toString());
     }
   }
 
@@ -58,8 +59,8 @@ public class OsUtilsProvider implements OsUtils {
   @NotNull
   public Runnable ioStreamsRedirector(@NotNull InputStream in, @NotNull OutputStream out, String name) {
     return () -> {
-        redirectIOStreams(in, out);
-        logger.log(Level.INFO, "Redirector stop... " + String.valueOf(name));
+      redirectIOStreams(in, out);
+      logger.log(Level.INFO, "Redirector stop... " + name);
     };
   }
 
@@ -109,7 +110,7 @@ public class OsUtilsProvider implements OsUtils {
    */
   @Override
   @Nullable
-  public Path checkProgramExists(@NotNull String name) throws IOException {
+  public Path checkProgramExists(@NotNull String name) {
 
     ProcessBuilder pb = new ProcessBuilder(isWindows() ? "where" : "which", name);
     Path foundProgram = null;
@@ -132,8 +133,6 @@ public class OsUtilsProvider implements OsUtils {
     }
     return foundProgram;
   }
-
-  ;
 
 
   /**

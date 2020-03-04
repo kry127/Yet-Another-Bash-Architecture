@@ -21,7 +21,7 @@ public class LiteralConcat implements Expression {
   /**
    * Подобный класс должен иметь хотя бы один литерал
    *
-   * @param literal
+   * @param literal Литерал, из которого будет состоять начальный литеральный список
    */
   LiteralConcat(@NotNull Literal literal) {
     list = new LinkedList<>();
@@ -31,7 +31,7 @@ public class LiteralConcat implements Expression {
   /**
    * Добавляет очередной литерал к литеральной конкатенации
    *
-   * @param literal
+   * @param literal добавляемый литерал
    */
   public void addLiteral(@NotNull Literal literal) {
     list.add(literal);
@@ -46,6 +46,12 @@ public class LiteralConcat implements Expression {
     return sb.toString();
   }
 
+  /**
+   * Метод выполняет извлечение всех сырых строковых значений литералов без
+   * использования интерполяций, и возвращает их конкатенацию.
+   *
+   * @return сырое содержимое строки без интерполяций.
+   */
   protected String getRawContents() {
     StringBuilder sb = new StringBuilder();
     for (Literal literal : list) {
@@ -57,7 +63,8 @@ public class LiteralConcat implements Expression {
   /**
    * Статический метод предназначен облегчить приведение
    * стоки <tt>java.lang.String</tt> к типу LiteralConcat
-   * @return
+   *
+   * @return Обёртку строки в виде <tt>LiteralConcat</tt>
    */
   public static LiteralConcat fromString(String s) {
     return new LiteralConcat(new LiteralRaw(s));

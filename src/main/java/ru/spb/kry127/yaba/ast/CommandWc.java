@@ -1,7 +1,5 @@
 package ru.spb.kry127.yaba.ast;
 
-import ru.spb.kry127.yaba.exceptions.CommandNotFoundException;
-
 import java.io.*;
 import java.text.MessageFormat;
 import java.util.Scanner;
@@ -32,8 +30,7 @@ public class CommandWc extends Command {
   }
 
   @Override
-  public void execute(InputStream in, PrintStream out, PrintStream err)
-      throws CommandNotFoundException, IOException {
+  public void execute(InputStream in, PrintStream out, PrintStream err) throws IOException {
     final String[] argv = getArgv();
     final PrintStream pws = new PrintStream(out);
     final PrintStream eps = new PrintStream(err);

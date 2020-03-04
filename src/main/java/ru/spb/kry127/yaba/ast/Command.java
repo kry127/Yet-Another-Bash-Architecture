@@ -10,12 +10,11 @@ import java.util.List;
  * Команда -- это исполняемая команда, как в программе
  * имя программы и передаваемые аргументы
  */
-public abstract class Command implements ExecutableExpr {
+abstract class Command implements ExecutableExpr {
 
   // Тут стоял String, и это была архитектурная ошибка, она стоила дорого
   private LiteralConcat commandName;
   private LiteralConcat[] args;
-  private Executable action;
   private boolean internal;
 
   /**
@@ -39,6 +38,11 @@ public abstract class Command implements ExecutableExpr {
     internal = isInternal;
   }
 
+  /**
+   * Формально, метод не используется
+   *
+   * @return <tt>true</tt>, если команда внутренняя, иначе <tt>false</tt>
+   */
   public boolean isInternal() {
     return internal;
   }
@@ -65,7 +69,7 @@ public abstract class Command implements ExecutableExpr {
    */
   @NotNull
   public final String[] getArgv() {
-    List<String> argv = new LinkedList<String>();
+    List<String> argv = new LinkedList<>();
     for (LiteralConcat arg : args) {
       argv.add(arg.getRawContents());
     }

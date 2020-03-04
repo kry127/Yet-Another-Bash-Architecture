@@ -1,5 +1,6 @@
 package ru.spb.kry127.yaba.ast;
 
+import org.jetbrains.annotations.NotNull;
 import ru.spb.kry127.yaba.io.Environment;
 
 import java.util.regex.Matcher;
@@ -28,7 +29,7 @@ public abstract class Literal implements Expression {
   // TODO точно ли этот метод нужен здесь, а не в парсере?
   // Ответ -- пока что нет, мы предполагаем, что парсер не знает, как собирается строка
   @Override
-  public String interpolate(Environment environment) {
+  public String interpolate(@NotNull Environment environment) {
     Matcher m = DOLLARZ.matcher(contents);
 
     StringBuffer sb = new StringBuffer();

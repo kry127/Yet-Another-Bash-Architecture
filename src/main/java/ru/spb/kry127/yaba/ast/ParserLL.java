@@ -12,6 +12,8 @@ import java.util.regex.Pattern;
 
 /**
  * Имплементация парсера, реализующая LL-спуск по грамматике
+ * <p>
+ * Существенный недостаток парсера -- управление на исключениях.
  *
  * @see ru.spb.kry127.yaba.ast.Parser
  * @see ru.spb.kry127.yaba.ast.Expression

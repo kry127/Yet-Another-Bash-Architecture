@@ -1,11 +1,11 @@
 package ru.spb.kry127.yaba.ast;
 
+import org.jetbrains.annotations.NotNull;
 import ru.spb.kry127.yaba.exceptions.CommandNotFoundException;
 import ru.spb.kry127.yaba.io.Environment;
 
 import java.io.*;
 import java.text.MessageFormat;
-import java.util.concurrent.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -33,8 +33,9 @@ public class Pipe implements ExecutableExpr {
    * @param in  -- поток ввода
    * @param out -- поток вывода
    * @param err -- поток ошибки
-   * @throws CommandNotFoundException
-   * @throws IOException
+   * @throws CommandNotFoundException исключение выбрасывается, если произошла попытка исполнить внешнюю команду,
+   *                                  которая не найдена в операционной системе.
+   * @throws IOException исключение выбрасывается при ошибках ввода-вывода
    */
   @Override
   public void execute(InputStream in, PrintStream out, PrintStream err)
@@ -87,7 +88,7 @@ public class Pipe implements ExecutableExpr {
   }
 
   @Override
-  public String interpolate(Environment environment) {
+  public String interpolate(@NotNull Environment environment) {
     return MessageFormat.format(
         "{0}|{1}",
         cmdLeft.interpolate(environment), cmdRight.interpolate(environment));

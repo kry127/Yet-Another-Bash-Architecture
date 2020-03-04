@@ -60,20 +60,24 @@ public class CommandExternal extends Command {
       Thread thread2 = new Thread(runnable2);
       Thread thread3 = new Thread(runnable3);
 
+      thread1.setDaemon(true);
+
       thread1.start();
       thread2.start();
       thread3.start();
 
       // blocking call
       try {
+        poutput.flush();
         p.waitFor();
         // manually terminate threads
-        thread1.interrupt();
-        thread2.interrupt();
         thread3.interrupt();
+        thread2.interrupt();
+        thread1.interrupt();
       } catch (InterruptedException e) {
         err.println("Command '" + execName + "' was interrupted");
       } finally {
+        in.close(); // использовать ТОЛЬКО с прокси-обёрткой! см. класс InputStreamProxy
         pinput.close();
         poutput.close();
         perror.close();

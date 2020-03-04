@@ -1,5 +1,6 @@
 package ru.spb.kry127.yaba.ast;
 
+import org.jetbrains.annotations.NotNull;
 import ru.spb.kry127.yaba.exceptions.CommandNotFoundException;
 import ru.spb.kry127.yaba.io.Environment;
 
@@ -44,7 +45,7 @@ public class Assignment implements ExecutableExpr {
   }
 
   @Override
-  public String interpolate(Environment exec_environment) {
+  public String interpolate(@NotNull Environment exec_environment) {
     return MessageFormat.format(
         "{0}={1}",
         environmentVariable, expression.interpolate(exec_environment));

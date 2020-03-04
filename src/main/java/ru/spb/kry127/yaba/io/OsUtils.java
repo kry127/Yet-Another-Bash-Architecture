@@ -21,15 +21,15 @@ public interface OsUtils {
    * Метод возвращает запускаемый объект, который исходя из названия (Redirector)
    * перенаправляет поток ввода в поток вывода. Стоит запускать в виде
    * потока. Используется для неименованных каналов.
-   * @param in Поток ввода
-   * @param out Поток вывода
+   *
+   * @param in   Поток ввода
+   * @param out  Поток вывода
    * @param name Наименование редиректора
    * @return запускаемый объект, который можно использовать как контекст исполнения потока.
-   *
    * @see ru.spb.kry127.yaba.ast.Pipe
    */
   @NotNull
-  public Runnable ioStreamsRedirector(@NotNull InputStream in, @NotNull OutputStream out, String name);
+  Runnable ioStreamsRedirector(@NotNull InputStream in, @NotNull OutputStream out, String name);
 
   /**
    * Неэффективный метод, который вместо легковесных потоков пытался использовать

@@ -1,5 +1,6 @@
 package ru.spb.kry127.yaba.ast;
 
+import org.jetbrains.annotations.NotNull;
 import ru.spb.kry127.yaba.io.Environment;
 
 /**
@@ -12,7 +13,7 @@ public class LiteralQualifiedSingle extends Literal {
   }
 
   @Override
-  public String interpolate(Environment environment) {
+  public String interpolate(@NotNull Environment environment) {
     final String interpolated = super.interpolate(environment);
     // not working
     // return MessageFormat.format("'{0}'", interpolated);

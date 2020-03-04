@@ -21,7 +21,7 @@ public interface SystemReader {
   /**
    * @return стандартный поток ввода.
    */
-  public InputStream getInStream();
+  InputStream getInStream();
 
   /**
    * @return стандартный поток вывода.

@@ -15,6 +15,7 @@ import java.io.IOException;
 import java.io.PrintStream;
 import java.util.NoSuchElementException;
 import java.util.logging.Level;
+import java.util.logging.LogManager;
 import java.util.logging.Logger;
 
 public class Program implements CommandPipeline {
@@ -39,9 +40,11 @@ public class Program implements CommandPipeline {
   /**
    * Метод исполняется по одному разу для каждой строки
    *
-   * @throws SyntaxException
-   * @throws IOException
-   * @throws CommandNotFoundException
+   * @throws SyntaxException          В процессе выполнения произошло синтаксическое исключение
+   * @throws IOException              В процессе работы произошло исключение в подсистеме ввода вывода
+   *                                  (кидается только в основном потоке)
+   * @throws CommandNotFoundException Внешняя команда оказалась не найденной
+   *                                  (кидается только в основном потоке)
    */
   private void readEvalPrint() throws SyntaxException, IOException, CommandNotFoundException {
     // Выводим prompt
@@ -64,6 +67,9 @@ public class Program implements CommandPipeline {
 
   @Override
   public void run() {
+    // если необходимо отключить логгинг, можно использовать:
+    LogManager.getLogManager().reset();
+
     PrintStream errOutput = systemReader.getErrStream();
     while (true) {
       try {
