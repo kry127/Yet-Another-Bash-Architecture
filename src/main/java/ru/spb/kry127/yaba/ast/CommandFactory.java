@@ -18,6 +18,7 @@ public class CommandFactory {
   public static final String COMMAND_CAT = "cat";
   public static final String COMMAND_ECHO = "echo";
   public static final String COMMAND_WC = "wc";
+  public static final String COMMAND_GREP = "grep";
   public static final String COMMAND_PWD = "pwd";
   public static final String COMMAND_EXIT = "exit";
 
@@ -71,6 +72,9 @@ public class CommandFactory {
       // End case of COMMAND_ECHO
       case COMMAND_WC:
         return new CommandWc(name);
+      // End case of COMMAND_WC
+      case COMMAND_GREP:
+        return new CommandGrep(name);
       // End case of COMMAND_WC
       case COMMAND_PWD:
         return new Command(name) {
