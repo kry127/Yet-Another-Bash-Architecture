@@ -20,6 +20,8 @@ public class CommandFactory {
   public static final String COMMAND_WC = "wc";
   public static final String COMMAND_GREP = "grep";
   public static final String COMMAND_PWD = "pwd";
+  public static final String COMMAND_LS = "ls";
+  public static final String COMMAND_CD = "cd";
   public static final String COMMAND_EXIT = "exit";
 
   private static final OsUtils osUtils;
@@ -85,6 +87,10 @@ public class CommandFactory {
           }
         };
       // End case of COMMAND_PWD
+      case COMMAND_LS:
+        return new CommandLs(name);
+      case COMMAND_CD:
+        return new CommandCd(name);
       case COMMAND_EXIT:
         return new Command(name) {
           @Override
