@@ -71,10 +71,10 @@ public class OsUtilsTest {
     assertNotNull(osUtils.checkProgramExists("which"));
   }
 
-  @Test
-  public void checkProgramExists_WindowsWhere() throws IOException {
-    assertNotNull(osUtils.checkProgramExists("where"));
-  }
+//  @Test
+//  public void checkProgramExists_WindowsWhere() throws IOException {
+//    assertNotNull(osUtils.checkProgramExists("where"));
+//  }
 
 
   @Test
@@ -97,10 +97,10 @@ public class OsUtilsTest {
     assertNotNull(osUtils.checkProgramExists("bash"));
   }
 
-  @Test
-  public void checkProgramExists_WindowsCmd() throws IOException {
-    assertNotNull(osUtils.checkProgramExists("cmd"));
-  }
+//  @Test
+//  public void checkProgramExists_WindowsCmd() throws IOException {
+//    assertNotNull(osUtils.checkProgramExists("cmd"));
+//  }
 
   @Test
   public void checkProgramExists_Docker() throws IOException {
