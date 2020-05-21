@@ -181,7 +181,8 @@ public class ParserLL implements Parser {
       } else {
         // this should be error, because grammar not supposed to reside any
         // nonterminals behind Pipe ...
-        throw new SyntaxException("Error: unexpected literals behind command -- Pipe expected");
+        String message = "Invalid syntax at position: '" + rest + "'. (Expected pipe or nothing)";
+        throw new SyntaxException(message);
       }
 
       // pipe found, then we should find command and parse it

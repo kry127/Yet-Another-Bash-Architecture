@@ -26,7 +26,7 @@ public class InputStreamProxy extends FilterInputStream {
   volatile boolean closed = false;
 
 
-  protected InputStreamProxy(InputStream in) {
+  public InputStreamProxy(InputStream in) {
     super(in);
   }
 

@@ -20,7 +20,7 @@ import java.util.logging.Logger;
 
 public class Program implements CommandPipeline {
 
-  private final static String PROMPT = " YABA 8===> ";
+  private final static String PS1 = " YABA > ";
 
   private final SystemReader systemReader;
   private final Environment environment;
@@ -53,7 +53,7 @@ public class Program implements CommandPipeline {
    */
   private void readEvalPrint() throws SyntaxException, IOException, CommandNotFoundException {
     // Выводим prompt
-    systemReader.getOutStream().print(PROMPT);
+    systemReader.getOutStream().print(PS1);
     // читаем входную строку
     String line = systemReader.getLine();
     // разбираем её парсером

@@ -3,6 +3,7 @@ package ru.spb.kry127.yaba.ast;
 import org.jetbrains.annotations.NotNull;
 import ru.spb.kry127.yaba.exceptions.CommandNotFoundException;
 import ru.spb.kry127.yaba.io.Environment;
+import ru.spb.kry127.yaba.io.InputStreamProxy;
 
 import java.io.*;
 import java.text.MessageFormat;
@@ -38,11 +39,11 @@ public class Pipe implements ExecutableExpr {
    * @throws IOException исключение выбрасывается при ошибках ввода-вывода
    */
   @Override
-  public void execute(InputStream in, PrintStream out, PrintStream err)
+  public void execute(InputStreamProxy in, PrintStream out, PrintStream err)
       throws CommandNotFoundException, IOException {
     // создаём неименованный канал в оперативной памяти
     PipedOutputStream pos = new PipedOutputStream();
-    PipedInputStream pis = new PipedInputStream(pos, 8192);
+    InputStreamProxy pis = new InputStreamProxy(new PipedInputStream(pos, 8192));
     PrintStream posPrinter = new PrintStream(pos);
     final Logger log = Logger.getLogger(Pipe.class.getName());
 

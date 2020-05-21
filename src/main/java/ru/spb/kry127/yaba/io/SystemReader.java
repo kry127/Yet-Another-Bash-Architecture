@@ -1,6 +1,6 @@
 package ru.spb.kry127.yaba.io;
 
-import java.io.InputStream;
+import java.io.IOException;
 import java.io.PrintStream;
 
 /**
@@ -16,12 +16,12 @@ public interface SystemReader {
    *
    * @return строка, введённая пользователем
    */
-  String getLine();
+  String getLine() throws IOException;
 
   /**
    * @return стандартный поток ввода.
    */
-  InputStream getInStream();
+  InputStreamProxy getInStream();
 
   /**
    * @return стандартный поток вывода.

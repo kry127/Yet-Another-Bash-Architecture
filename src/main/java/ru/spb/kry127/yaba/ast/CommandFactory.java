@@ -1,6 +1,7 @@
 package ru.spb.kry127.yaba.ast;
 
 import org.jetbrains.annotations.NotNull;
+import ru.spb.kry127.yaba.io.InputStreamProxy;
 import ru.spb.kry127.yaba.io.OsUtils;
 import ru.spb.kry127.yaba.io.OsUtilsProvider;
 
@@ -45,7 +46,7 @@ public class CommandFactory {
       case COMMAND_CAT:
         return new Command(name) {
           @Override
-          public void execute(InputStream in, PrintStream out, PrintStream err)
+          public void execute(InputStreamProxy in, PrintStream out, PrintStream err)
               throws IOException {
             String[] argv = getArgv();
             if (argv.length == 0) {
@@ -75,7 +76,7 @@ public class CommandFactory {
       case COMMAND_PWD:
         return new Command(name) {
           @Override
-          public void execute(InputStream in, PrintStream out, PrintStream err) {
+          public void execute(InputStreamProxy in, PrintStream out, PrintStream err) {
             final String cwd = System.getProperty("user.dir");
             out.println(cwd);
           }
@@ -84,7 +85,7 @@ public class CommandFactory {
       case COMMAND_EXIT:
         return new Command(name) {
           @Override
-          public void execute(InputStream in, PrintStream out, PrintStream err) {
+          public void execute(InputStreamProxy in, PrintStream out, PrintStream err) {
             System.exit(0);
           }
         };

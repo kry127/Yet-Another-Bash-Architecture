@@ -1,8 +1,6 @@
 package ru.spb.kry127.yaba.io;
 
-import java.io.InputStream;
-import java.io.PrintStream;
-import java.util.Scanner;
+import java.io.*;
 
 /**
  * Реализация протокола доступа к системному потоку ввода вывода.
@@ -11,10 +9,10 @@ import java.util.Scanner;
 public class SystemReaderProvider implements SystemReader {
 
   private static SystemReader singleton;
-  private final Scanner sc;
+  private final BufferedReader bufferedReader;
 
   private SystemReaderProvider() {
-    sc = new Scanner(System.in);
+    bufferedReader = new BufferedReader(new InputStreamReader(System.in));
   }
 
   /**
@@ -33,8 +31,8 @@ public class SystemReaderProvider implements SystemReader {
   }
 
   @Override
-  public String getLine() {
-    return sc.nextLine();
+  public String getLine() throws IOException {
+    return bufferedReader.readLine();
   }
 
 
@@ -45,7 +43,7 @@ public class SystemReaderProvider implements SystemReader {
    * @return
    */
   @Override
-  public InputStream getInStream() {
+  public InputStreamProxy getInStream() {
     return new InputStreamProxy(System.in);
   }
 

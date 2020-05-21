@@ -2,10 +2,7 @@ package ru.spb.kry127.yaba.ast;
 
 import org.jetbrains.annotations.NotNull;
 import ru.spb.kry127.yaba.exceptions.CommandNotFoundException;
-import ru.spb.kry127.yaba.io.Environment;
-import ru.spb.kry127.yaba.io.EnvironmentProvider;
-import ru.spb.kry127.yaba.io.OsUtils;
-import ru.spb.kry127.yaba.io.OsUtilsProvider;
+import ru.spb.kry127.yaba.io.*;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -23,7 +20,7 @@ public class CommandExternal extends Command {
   }
 
   @Override
-  public void execute(InputStream in, PrintStream out, PrintStream err)
+  public void execute(InputStreamProxy in, PrintStream out, PrintStream err)
       throws CommandNotFoundException, IOException {
     {
       final String execName = getCommandName();
