@@ -49,11 +49,33 @@ public class ParserLL implements Parser {
     private static class InformationBundle<T extends Expression> {
         private T expression; // результат парсинга
         private String rest;  // остаток разбираемой строки
+        SyntaxException ex;   // или ошибка при разборе выражения
+
 
         // даже создавать его запрещаем (по крайней мере легальными методами)
         private InformationBundle(T expression, String rest) {
             this.expression = expression;
             this.rest = rest;
+            ex = null;
+        }
+
+        private InformationBundle(SyntaxException exception) {
+            expression = null;
+            rest = null;
+            ex = exception;
+        }
+
+
+        boolean isError() {
+            return ex != null;
+        }
+
+        static <Q extends Expression> InformationBundle<Q> errorFromMessage(String string) {
+            return new InformationBundle<Q>(new SyntaxException(string));
+        }
+
+        <Q extends Expression> InformationBundle<Q> retransmit() {
+            return new InformationBundle<Q>(ex);
         }
     }
 
@@ -67,7 +89,11 @@ public class ParserLL implements Parser {
             echo.setArgs(new LiteralConcat[0]);
             return echo;
         }
-        return buildAst(input);
+        InformationBundle<ExecutableExpr> astBundle = buildAst(input);
+        if (astBundle.isError()) {
+            throw astBundle.ex;
+        }
+        return astBundle.expression;
     }
 
     /**
@@ -80,15 +106,19 @@ public class ParserLL implements Parser {
      * @throws SyntaxException Сообщение об ошибке парсинга
      */
     @NotNull
-    private ExecutableExpr buildAst(@NotNull String input) throws SyntaxException {
+    private InformationBundle<ExecutableExpr> buildAst(@NotNull String input) {
         InformationBundle<ExecutableExpr> execExprBundle = parseAssignment(input);
+        if (execExprBundle.isError()) {
+            return execExprBundle.retransmit();
+        }
         ExecutableExpr ret = execExprBundle.expression;
         String tail = execExprBundle.rest;
         if (!isEmpty(tail)) {
-            throw new SyntaxException("Unexpected nonempty tail after parsed command line");
+            String message = "Unexpected nonempty tail after parsed command line";
+            return InformationBundle.errorFromMessage(message);
         }
         // наконец-то возвращаем разобранное выражение!
-        return ret;
+        return new InformationBundle<>(ret, null);
     }
 
     /**
@@ -102,9 +132,12 @@ public class ParserLL implements Parser {
      * конкатенацию разнородных строк перед знаком "=" как переменную среды.
      */
     @NotNull
-    private InformationBundle<ExecutableExpr> parseAssignment(@NotNull String input) throws SyntaxException {
+    private InformationBundle<ExecutableExpr> parseAssignment(@NotNull String input)  {
         // if first throws, than there is no literal list here
         InformationBundle<Literal> ib = parseOneLiteral(input);
+        if (ib.isError()) {
+            return ib.retransmit();
+        }
         String rest = ib.rest;
         Literal env_variable = ib.expression;
 
@@ -112,9 +145,10 @@ public class ParserLL implements Parser {
             // да, действительно, это присвоение переменной среды
             // тут может быть либо пайп (команда), либо литерал
             rest = rest.substring(1);
-            try {
-                // здесь может упасть, тогда это не просто литерал
-                InformationBundle<LiteralConcat> ibconcat = parseLiteral(rest);
+            // здесь может упасть, тогда это не просто литерал
+            InformationBundle<LiteralConcat> ibconcat = parseLiteral(rest);
+            if (!ibconcat.isError()) {
+                // OK, получилось распарсить
                 String subRest = ibconcat.rest;
                 LiteralConcat concat = ibconcat.expression;
                 if (isEmpty(subRest)) {
@@ -124,12 +158,13 @@ public class ParserLL implements Parser {
                     assignment.setExpression(concat);
                     return new InformationBundle<>(assignment, subRest);
                 }
-            } catch (SyntaxException exc) {
-                // OK, не получилось распарсить просто литерал
             }
+            // OK, не получилось распарсить просто литерал
             // теперь попытаемся распарсить его как пайп
-            // но уже без отлова исключения, так как это второй и последний кейс
             InformationBundle<ExecutableExpr> ibpipe = parsePipe(rest);
+            if (ibpipe.isError()) {
+                return ibpipe.retransmit(); // FAIL, это точно ошибка
+            }
             rest = ibpipe.rest;
             ExecutableExpr pipe = ibpipe.expression;
             Assignment pipeAssignment = new Assignment(environment, env_variable.getRawContents());
@@ -142,6 +177,9 @@ public class ParserLL implements Parser {
         // теперь попытаемся распарсить его как пайп
         // но уже без отлова исключения, так как это второй и последний кейс
         InformationBundle<ExecutableExpr> pip = parsePipe(input);
+        if (pip.isError()) {
+            return pip.retransmit();
+        }
         rest = pip.rest;
         ExecutableExpr pipe = pip.expression;
         return new InformationBundle<>(pipe, rest);
@@ -152,9 +190,12 @@ public class ParserLL implements Parser {
      * Метод парсит неименованные каналы на основе метода <tt>parseCommand</tt>
      */
     @NotNull
-    private InformationBundle<ExecutableExpr> parsePipe(@NotNull String input) throws SyntaxException {
+    private InformationBundle<ExecutableExpr> parsePipe(@NotNull String input) {
         // if first throws, than there is no literal list here
         InformationBundle<Command> ib = parseCommand(input);
+        if (ib.isError()) {
+            return ib.retransmit();
+        }
         String rest = ib.rest;
         // actually, this is a Command, but we need to rise the abstraction
         // LCA(Command, Pipe) = ExecutableExpr
@@ -182,12 +223,15 @@ public class ParserLL implements Parser {
                 // this should be error, because grammar not supposed to reside any
                 // nonterminals behind Pipe ...
                 String message = "Invalid syntax at position: '" + rest + "'. (Expected pipe or nothing)";
-                throw new SyntaxException(message);
+                return InformationBundle.errorFromMessage(message);
             }
 
             // pipe found, then we should find command and parse it
             // get the second command (SHOULD exist)
             ib = parseCommand(rest);
+            if (ib.isError()) {
+                return ib.retransmit();
+            }
             rest = ib.rest;
             pipedCommands.addLast(ib.expression);
         }
@@ -210,25 +254,28 @@ public class ParserLL implements Parser {
      * Метод парсит команду на основе методов <tt>parseLiteral</tt>
      */
     @NotNull
-    private InformationBundle<Command> parseCommand(@NotNull String input) throws SyntaxException {
+    private InformationBundle<Command> parseCommand(@NotNull String input) {
         // if first throws, than there is no literal list here
         InformationBundle<LiteralConcat> ib = parseLiteral(input);
+        if (ib.isError()) {
+            return ib.retransmit();
+        }
         String rest = ib.rest;
         LiteralConcat program_name = ib.expression;
 
 
         // getting arguments of a program
         List<LiteralConcat> argv = new ArrayList<>();
-        try {
-            while (!isEmpty(rest)) {
-                // purge space after each LiteralConcat
-                rest = purgeSpaces(rest);
-                ib = parseLiteral(rest);
-                rest = ib.rest;
-                argv.add(ib.expression);
+        while (!isEmpty(rest)) {
+            // purge space after each LiteralConcat
+            rest = purgeSpaces(rest);
+            ib = parseLiteral(rest);
+            if (ib.isError()) {
+                break;
+                // OK, literal parsing is over
             }
-        } catch (SyntaxException ex) {
-            // OK, literal parsing is over
+            rest = ib.rest;
+            argv.add(ib.expression);
         }
 
         // composing Command with factory class
@@ -242,21 +289,23 @@ public class ParserLL implements Parser {
      * используя метод <tt>parseLiteral</tt>
      */
     @NotNull
-    private InformationBundle<LiteralConcat> parseLiteral(@NotNull String input)
-            throws SyntaxException {
+    private InformationBundle<LiteralConcat> parseLiteral(@NotNull String input) {
         // if first throws, than there is no literal here
         InformationBundle<Literal> ib = parseOneLiteral(input);
+        if (ib.isError()) {
+            return ib.retransmit();
+        }
         String rest = ib.rest;
         LiteralConcat lc = new LiteralConcat(ib.expression);
 
-        try {
-            while (!isEmpty(rest)) {
-                ib = parseOneLiteral(rest);
-                rest = ib.rest;
-                lc.addLiteral(ib.expression);
+        while (!isEmpty(rest)) {
+            ib = parseOneLiteral(rest);
+            if (ib.isError()) {
+                // OK, literal parsing is over
+                break;
             }
-        } catch (SyntaxException ex) {
-            // OK, literal parsing is over
+            rest = ib.rest;
+            lc.addLiteral(ib.expression);
         }
         return new InformationBundle<>(lc, rest);
     }
@@ -266,8 +315,7 @@ public class ParserLL implements Parser {
      * или без кавычек
      */
     @NotNull
-    private InformationBundle<Literal> parseOneLiteral(@NotNull String input)
-            throws SyntaxException {
+    private InformationBundle<Literal> parseOneLiteral(@NotNull String input) {
 
         Matcher matcherDouble = DOUBLE_QUALIFIED_REGEX.matcher(input);
         Matcher matcherSingle = SINGLE_QUALIFIED_REGEX.matcher(input);
@@ -294,7 +342,8 @@ public class ParserLL implements Parser {
             return new InformationBundle<>(lr, input.substring(end));
         }
 
-        throw new SyntaxException("Error during string literal parsing");
+        String message = "Error during string literal parsing";
+        return InformationBundle.errorFromMessage(message);
     }
 
     /**

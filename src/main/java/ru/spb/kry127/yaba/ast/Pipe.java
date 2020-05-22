@@ -85,6 +85,7 @@ public class Pipe implements ExecutableExpr {
         // флашим output левой команды:
         posPrinter.flush();
         posPrinter.close();
+        pis.close();
         // эта операция позволит myThread завершить свою работу!
 
         try {

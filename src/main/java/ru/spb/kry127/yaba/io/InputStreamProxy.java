@@ -3,6 +3,8 @@ package ru.spb.kry127.yaba.io;
 import java.io.FilterInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.PipedInputStream;
+import java.lang.reflect.Field;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -38,6 +40,10 @@ public class InputStreamProxy extends FilterInputStream {
     public int read(byte[] b) throws IOException {
         if (closed)
             return -1; // если ресурс закрыт, возвращаем -1, как идентификатор
+//        if (in instanceof PipedInputStream) {
+//            PipedInputStream pip = (PipedInputStream) in;
+//            return pip.read();
+//        }
         if (super.available() > 0) {
             return super.read(b);
         }

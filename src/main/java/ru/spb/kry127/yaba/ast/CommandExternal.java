@@ -9,6 +9,8 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PrintStream;
 import java.nio.file.Path;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ThreadPoolExecutor;
 
 /**
  * Класс, который запускает внешние команды в операционной системе.
@@ -16,6 +18,7 @@ import java.nio.file.Path;
 public class CommandExternal extends Command {
 
     private final OsUtils osUtils;
+    private static final ThreadPoolExecutor threadPool = (ThreadPoolExecutor) Executors.newFixedThreadPool(12);
 
     /**
      * Инициализация внешней команды операционной системы с именем name.
@@ -60,24 +63,18 @@ public class CommandExternal extends Command {
             Runnable runnable2 = osUtils.ioStreamsRedirector(pinput, out, "stdout");
             Runnable runnable3 = osUtils.ioStreamsRedirector(perror, err, "stderr");
 
-            Thread thread1 = new Thread(runnable1);
-            Thread thread2 = new Thread(runnable2);
-            Thread thread3 = new Thread(runnable3);
-
-            thread1.setDaemon(true);
-
-            thread1.start();
-            thread2.start();
-            thread3.start();
+            threadPool.execute(runnable1);
+            threadPool.execute(runnable2);
+            threadPool.execute(runnable3);
 
             // blocking call
             try {
                 poutput.flush();
                 p.waitFor();
                 // manually terminate threads
-                thread3.interrupt();
-                thread2.interrupt();
-                thread1.interrupt();
+                threadPool.remove(runnable1);
+                threadPool.remove(runnable2);
+                threadPool.remove(runnable3);
             } catch (InterruptedException e) {
                 err.println("Command '" + execName + "' was interrupted");
             } finally {
