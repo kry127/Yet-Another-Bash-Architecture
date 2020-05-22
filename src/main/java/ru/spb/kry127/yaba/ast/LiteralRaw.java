@@ -11,7 +11,7 @@ package ru.spb.kry127.yaba.ast;
  * </p>
  */
 public class LiteralRaw extends Literal {
-  public LiteralRaw(String contents) {
-    super(contents);
-  }
+    public LiteralRaw(String contents) {
+        super(contents);
+    }
 }

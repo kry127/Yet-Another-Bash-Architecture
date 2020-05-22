@@ -10,14 +10,14 @@ import java.text.MessageFormat;
  */
 public class LiteralQualifiedDouble extends Literal {
 
-  protected LiteralQualifiedDouble(String contents) {
-    super(contents);
-  }
+    protected LiteralQualifiedDouble(String contents) {
+        super(contents);
+    }
 
-  @Override
-  public String interpolate(@NotNull Environment environment) {
-    final String interpolated = super.interpolate(environment);
-    // TODO fix escaped symbols
-    return MessageFormat.format("\"{0}\"", interpolated);
-  }
+    @Override
+    public String interpolate(@NotNull Environment environment) {
+        final String interpolated = super.interpolate(environment);
+        // TODO fix escaped symbols
+        return MessageFormat.format("\"{0}\"", interpolated);
+    }
 }

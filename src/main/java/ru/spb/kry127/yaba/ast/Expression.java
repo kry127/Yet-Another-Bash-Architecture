@@ -33,12 +33,12 @@ import ru.spb.kry127.yaba.io.Environment;
  */
 public interface Expression {
 
-  /**
-   * Метод производит интерполяцию оператора подстановки '$', т.е.
-   * просматривает инстансы Interpolation
-   *
-   * @param environment Окружение, в котором происходит подстановка
-   * @return Строка, полученная после интерполяции выражения
-   */
-  String interpolate(@NotNull Environment environment);
+    /**
+     * Метод производит интерполяцию оператора подстановки '$', т.е.
+     * просматривает инстансы Interpolation
+     *
+     * @param environment Окружение, в котором происходит подстановка
+     * @return Строка, полученная после интерполяции выражения
+     */
+    String interpolate(@NotNull Environment environment);
 }

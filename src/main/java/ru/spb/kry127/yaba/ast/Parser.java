@@ -9,15 +9,14 @@ import ru.spb.kry127.yaba.exceptions.SyntaxException;
  * парсер, или вообще SLR парсер, так и ANTLR вообще прикрутим :)
  */
 public interface Parser {
-  /**
-   * Разбирает входную строку. В результате разбора по грамматике, описанном
-   * в комментарии к классу Expression, возвращает абстрактное синтаксическое
-   * дерево с операционной семантикой (ExecutableExpr = исполняемое выражение)
-   *
-   * @see Expression
-   *
-   * @return экземпляр класса разобранного выражения
-   */
-  ExecutableExpr parseExpression(String input) throws SyntaxException;
+    /**
+     * Разбирает входную строку. В результате разбора по грамматике, описанном
+     * в комментарии к классу Expression, возвращает абстрактное синтаксическое
+     * дерево с операционной семантикой (ExecutableExpr = исполняемое выражение)
+     *
+     * @return экземпляр класса разобранного выражения
+     * @see Expression
+     */
+    ExecutableExpr parseExpression(String input) throws SyntaxException;
 
 }

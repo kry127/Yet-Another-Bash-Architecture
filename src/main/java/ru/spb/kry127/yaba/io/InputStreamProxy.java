@@ -18,35 +18,39 @@ import java.util.logging.Logger;
  */
 public class InputStreamProxy extends FilterInputStream {
 
-  private final static Logger log = Logger.getLogger(InputStreamProxy.class.getName());
+    private final static Logger log = Logger.getLogger(InputStreamProxy.class.getName());
 
-  /**
-   * семафор, который идентифицирует "закрытость" ресурса
-   */
-  volatile boolean closed = false;
+    /**
+     * семафор, который идентифицирует "закрытость" ресурса
+     */
+    private volatile boolean closed = false;
 
 
-  public InputStreamProxy(InputStream in) {
-    super(in);
-  }
-
-  @Override
-  public int read(byte[] b) throws IOException {
-    if (closed)
-      return -1; // если ресурс закрыт, возвращаем -1, как идентификатор
-    if (super.available() > 0) {
-      return super.read(b);
+    /**
+     * Оборачивает InputStream в потокобезопасную версию в рамках консольного приложения.
+     * @param in
+     */
+    public InputStreamProxy(InputStream in) {
+        super(in);
     }
-    return 0;
-  }
 
-
-  @Override
-  public void close() throws IOException {
-    log.log(Level.INFO, "Proxy close called");
-    closed = true;
-    synchronized (this) {
-      this.notifyAll();
+    @Override
+    public int read(byte[] b) throws IOException {
+        if (closed)
+            return -1; // если ресурс закрыт, возвращаем -1, как идентификатор
+        if (super.available() > 0) {
+            return super.read(b);
+        }
+        return 0;
     }
-  }
+
+
+    @Override
+    public void close() throws IOException {
+        log.log(Level.INFO, "Proxy close called");
+        closed = true;
+        synchronized (this) {
+            this.notifyAll();
+        }
+    }
 }

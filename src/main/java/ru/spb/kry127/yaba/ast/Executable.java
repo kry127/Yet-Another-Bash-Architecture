@@ -13,13 +13,14 @@ import java.io.PrintStream;
  * среды, ОС, файловую систему, и т.д.
  */
 public interface Executable {
-  /**
-   * Команда исполняется с помощью метода в контексте
-   * трёх стандартных потоков ввода, вывода и ошибки.
-   *  @param in  -- поток ввода
-   * @param out -- поток вывода
-   * @param err -- поток ошибки
-   */
-  void execute(InputStreamProxy in, PrintStream out, PrintStream err)
-      throws CommandNotFoundException, IOException;
+    /**
+     * Команда исполняется с помощью метода в контексте
+     * трёх стандартных потоков ввода, вывода и ошибки.
+     *
+     * @param in  -- поток ввода
+     * @param out -- поток вывода
+     * @param err -- поток ошибки
+     */
+    void execute(InputStreamProxy in, PrintStream out, PrintStream err)
+            throws CommandNotFoundException, IOException;
 }

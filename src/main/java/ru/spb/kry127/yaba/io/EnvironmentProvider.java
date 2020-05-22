@@ -10,40 +10,40 @@ import java.util.Map;
  */
 public class EnvironmentProvider implements Environment {
 
-  Map<String, String> map;
+    private Map<String, String> map;
 
-  private static Environment singleton;
+    private static Environment singleton;
 
-  private EnvironmentProvider() {
-    map = new HashMap<>(System.getenv());
-    singleton = null;
-  }
-
-  /**
-   * @return объект-синглтон класса Environment
-   */
-  public static Environment getEnvironment() {
-    if (singleton == null)
-      singleton = new EnvironmentProvider();
-    return singleton;
-  }
-
-  @Override
-  public String getEnvVariable(String name) {
-    String envVariable = map.get(name);
-    if (envVariable != null) {
-      return envVariable;
+    private EnvironmentProvider() {
+        map = new HashMap<>(System.getenv());
+        singleton = null;
     }
-    return "";
-  }
 
-  @Override
-  public void setEnvVariable(String name, String value) {
-    map.put(name, value);
-  }
+    /**
+     * @return объект-синглтон класса Environment
+     */
+    public static Environment getEnvironment() {
+        if (singleton == null)
+            singleton = new EnvironmentProvider();
+        return singleton;
+    }
 
-  @Override
-  public Map<String, String> getFullEnvironment() {
-    return map;
-  }
+    @Override
+    public String getEnvVariable(String name) {
+        String envVariable = map.get(name);
+        if (envVariable != null) {
+            return envVariable;
+        }
+        return "";
+    }
+
+    @Override
+    public void setEnvVariable(String name, String value) {
+        map.put(name, value);
+    }
+
+    @Override
+    public Map<String, String> getFullEnvironment() {
+        return map;
+    }
 }

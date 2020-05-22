@@ -8,14 +8,14 @@ import ru.spb.kry127.yaba.io.Environment;
  */
 public class LiteralQualifiedSingle extends Literal {
 
-  protected LiteralQualifiedSingle(String contents) {
-    super(contents);
-  }
+    protected LiteralQualifiedSingle(String contents) {
+        super(contents);
+    }
 
-  @Override
-  public String interpolate(@NotNull Environment environment) {
-    // not working
-    // return MessageFormat.format("'{0}'", interpolated);
-    return "'" + super.getRawContents() + "'";
-  }
+    @Override
+    public String interpolate(@NotNull Environment environment) {
+        // not working
+        // return MessageFormat.format("'{0}'", interpolated);
+        return "'" + super.getRawContents() + "'";
+    }
 }

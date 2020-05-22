@@ -30,6 +30,9 @@ public class OsUtilsProvider implements OsUtils {
   private OsUtilsProvider() {
   }
 
+/**
+ * Получить менеджер OsUtils
+ */
   public static OsUtils getUtilsProvider() {
     return singleton;
   }

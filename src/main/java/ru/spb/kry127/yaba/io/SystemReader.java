@@ -11,25 +11,25 @@ import java.io.PrintStream;
  * потока ошибок.
  */
 public interface SystemReader {
-  /**
-   * Получает очередную строку из потока ввода.
-   *
-   * @return строка, введённая пользователем
-   */
-  String getLine() throws IOException;
+    /**
+     * Получает очередную строку из потока ввода.
+     *
+     * @return строка, введённая пользователем
+     */
+    String getLine() throws IOException;
 
-  /**
-   * @return стандартный поток ввода.
-   */
-  InputStreamProxy getInStream();
+    /**
+     * @return стандартный поток ввода.
+     */
+    InputStreamProxy getInStream();
 
-  /**
-   * @return стандартный поток вывода.
-   */
-  PrintStream getOutStream();
+    /**
+     * @return стандартный поток вывода.
+     */
+    PrintStream getOutStream();
 
-  /**
-   * @return стандартный поток ошибок.
-   */
-  PrintStream getErrStream();
+    /**
+     * @return стандартный поток ошибок.
+     */
+    PrintStream getErrStream();
 }
