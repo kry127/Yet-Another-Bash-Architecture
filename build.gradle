@@ -11,6 +11,17 @@ repositories {
     mavenCentral()
 }
 
+test {
+    // https://docs.gradle.org/current/javadoc/org/gradle/api/tasks/testing/TestFilter.html
+    filter {
+        excludeTestsMatching "*Windows*"
+    }
+}
+
+
+
+
+
 dependencies {
     implementation group: 'org.jetbrains', name: 'annotations', version: '16.0.1'
     implementation group: 'commons-cli', name: 'commons-cli', version: '1.4'
