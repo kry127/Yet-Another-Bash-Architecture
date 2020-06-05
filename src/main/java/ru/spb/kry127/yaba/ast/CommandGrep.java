@@ -54,11 +54,15 @@ public class CommandGrep extends Command {
         // получаем необходимые параметры
         boolean caseInsensitive = cmd.hasOption("i");
         boolean onlyWords = cmd.hasOption("w");
-        int lookAhead = -1;
+        int lookAhead = 0;
+        String optionValue = cmd.getOptionValue("A", "0");
         try {
-            lookAhead = Integer.parseInt(cmd.getOptionValue("A", "0"));
+            lookAhead = Integer.parseInt(optionValue);
+            if (lookAhead < 0) {
+                throw new CommandNotFoundException("grep: " + optionValue + ": invalid context length argument");
+            }
         } catch (NumberFormatException nfe) {
-            throw new CommandNotFoundException("Grep expects int at -A key");
+            throw new CommandNotFoundException("grep: " + optionValue + ": invalid context length argument");
         }
 
 
@@ -98,8 +102,7 @@ public class CommandGrep extends Command {
                             new FileInputStream(file)));
                     processFile(buf_in, out, cre, caseInsensitive, onlyWords, lookAhead);
                 } catch (FileNotFoundException e) {
-                    throw new IOException("Unable to open file " +
-                            args[1] + ":( ", e);
+                    throw new IOException("Unable to open file " + file + ":( ", e);
                 }
             }
         }
@@ -116,8 +119,8 @@ public class CommandGrep extends Command {
                 cooldown = lookAhead;
             } else if (cooldown > 0) {
                 out.println(s);
+                cooldown = cooldown - 1;
             }
-            cooldown = (cooldown > 0) ? cooldown - 1 : 0;
         }
     }
 }

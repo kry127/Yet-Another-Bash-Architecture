@@ -11,6 +11,7 @@ import ru.spb.kry127.yaba.io.EnvironmentProvider;
 import ru.spb.kry127.yaba.io.SystemReader;
 import ru.spb.kry127.yaba.io.SystemReaderProvider;
 
+import java.io.Console;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.util.NoSuchElementException;
@@ -23,7 +24,7 @@ import java.util.logging.Logger;
  */
 public class Program implements CommandPipeline {
 
-    private final static String PS1 = " YABA > ";
+    private final static String PS1 = " YABA >> ";
 
     private final SystemReader systemReader;
     private final Environment environment;
@@ -56,7 +57,8 @@ public class Program implements CommandPipeline {
      */
     private void readEvalPrint() throws SyntaxException, IOException, CommandNotFoundException {
         // Выводим prompt
-        systemReader.getOutStream().print(PS1);
+        PrintStream ps = systemReader.getOutStream();
+        ps.println(PS1); // we cannot flush print :((
         // читаем входную строку
         String line = systemReader.getLine();
         // разбираем её парсером
