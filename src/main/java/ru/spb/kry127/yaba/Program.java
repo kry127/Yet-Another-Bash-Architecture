@@ -11,7 +11,6 @@ import ru.spb.kry127.yaba.io.EnvironmentProvider;
 import ru.spb.kry127.yaba.io.SystemReader;
 import ru.spb.kry127.yaba.io.SystemReaderProvider;
 
-import java.io.Console;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.util.NoSuchElementException;

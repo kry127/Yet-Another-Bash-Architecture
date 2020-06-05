@@ -3,11 +3,9 @@ package ru.spb.kry127.yaba.ast;
 import org.apache.commons.cli.*;
 import org.jetbrains.annotations.NotNull;
 import ru.spb.kry127.yaba.exceptions.CommandNotFoundException;
-import ru.spb.kry127.yaba.exceptions.SyntaxException;
 import ru.spb.kry127.yaba.io.InputStreamProxy;
 
 import java.io.*;
-import java.nio.file.Path;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -92,15 +90,13 @@ public class CommandGrep extends Command {
         // смотрим, если остались ещё аргументы -- интерпретируем их как файлы,
         // иначе, читаем из командной строки
         if (argsRest.isEmpty()) {
-            BufferedReader buf_in = new BufferedReader(new InputStreamReader(in));
-            processFile(buf_in, out, cre, caseInsensitive, onlyWords, lookAhead);
+            try (BufferedReader buf_in = wrapInputStream(in)) {
+                processFile(buf_in, out, cre, lookAhead);
+            }
         } else {
             for (String file : argsRest) {
-                BufferedReader buf_in = null;
-                try {
-                    buf_in = new BufferedReader(new InputStreamReader(
-                            new FileInputStream(file)));
-                    processFile(buf_in, out, cre, caseInsensitive, onlyWords, lookAhead);
+                try (BufferedReader buf_in = wrapInputStream(new FileInputStream(file))) {
+                    processFile(buf_in, out, cre, lookAhead);
                 } catch (FileNotFoundException e) {
                     throw new IOException("Unable to open file " + file + ":( ", e);
                 }
@@ -108,8 +104,11 @@ public class CommandGrep extends Command {
         }
     }
 
-    private static void processFile(BufferedReader buf_in, PrintStream out, Pattern cre,
-                                    boolean caseInsensitive, boolean onlyWords, int lookAhead) throws IOException {
+    private static BufferedReader wrapInputStream(InputStream stream) {
+        return new BufferedReader(new InputStreamReader(stream));
+    }
+
+    private static void processFile(BufferedReader buf_in, PrintStream out, Pattern cre, int lookAhead) throws IOException {
         String s;
         int cooldown = 0;
         while ((s = buf_in.readLine()) != null) {

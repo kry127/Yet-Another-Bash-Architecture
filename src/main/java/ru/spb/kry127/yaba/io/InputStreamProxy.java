@@ -3,8 +3,6 @@ package ru.spb.kry127.yaba.io;
 import java.io.FilterInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.PipedInputStream;
-import java.lang.reflect.Field;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -30,6 +28,7 @@ public class InputStreamProxy extends FilterInputStream {
 
     /**
      * Оборачивает InputStream в потокобезопасную версию в рамках консольного приложения.
+     *
      * @param in
      */
     public InputStreamProxy(InputStream in) {
