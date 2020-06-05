@@ -132,7 +132,7 @@ public class ParserLL implements Parser {
      * конкатенацию разнородных строк перед знаком "=" как переменную среды.
      */
     @NotNull
-    private InformationBundle<ExecutableExpr> parseAssignment(@NotNull String input)  {
+    private InformationBundle<ExecutableExpr> parseAssignment(@NotNull String input) {
         // if first throws, than there is no literal list here
         InformationBundle<Literal> ib = parseOneLiteral(input);
         if (ib.isError()) {

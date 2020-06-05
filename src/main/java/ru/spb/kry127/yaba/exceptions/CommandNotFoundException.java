@@ -19,4 +19,8 @@ public class CommandNotFoundException extends Exception {
     public CommandNotFoundException(String expr) {
         super(MessageFormat.format(OUTPUT_PATTERN, expr));
     }
+
+    public CommandNotFoundException(String expr, Throwable cause) {
+        super(MessageFormat.format(OUTPUT_PATTERN, expr), cause);
+    }
 }

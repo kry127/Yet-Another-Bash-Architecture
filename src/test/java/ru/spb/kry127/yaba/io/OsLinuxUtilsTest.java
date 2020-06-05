@@ -9,7 +9,7 @@ import java.util.Scanner;
 
 import static org.junit.Assert.*;
 
-public class OsUtilsTest {
+public class OsLinuxUtilsTest {
 
   static OsUtils osUtils;
 
@@ -71,11 +71,6 @@ public class OsUtilsTest {
     assertNotNull(osUtils.checkProgramExists("which"));
   }
 
-  @Test
-  public void checkProgramExists_WindowsWhere() throws IOException {
-    assertNotNull(osUtils.checkProgramExists("where"));
-  }
-
 
   @Test
   public void checkProgramExists_LinuxPwd() throws IOException {
@@ -86,22 +81,10 @@ public class OsUtilsTest {
   public void checkProgramExists_git() throws IOException {
     assertNotNull(osUtils.checkProgramExists("git"));
   }
-
-  @Test
-  public void checkProgramExists_WindowsNotepad() throws IOException {
-    assertNotNull(osUtils.checkProgramExists("notepad"));
-  }
-
   @Test
   public void checkProgramExists_LinuxBash() throws IOException {
     assertNotNull(osUtils.checkProgramExists("bash"));
   }
-
-  @Test
-  public void checkProgramExists_WindowsCmd() throws IOException {
-    assertNotNull(osUtils.checkProgramExists("cmd"));
-  }
-
   @Test
   public void checkProgramExists_Docker() throws IOException {
     assertNotNull(osUtils.checkProgramExists("docker"));

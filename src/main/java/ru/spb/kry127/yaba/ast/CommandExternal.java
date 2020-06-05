@@ -22,6 +22,7 @@ public class CommandExternal extends Command {
 
     /**
      * Инициализация внешней команды операционной системы с именем name.
+     *
      * @param name Имя внешней команды операционной системы
      */
     public CommandExternal(@NotNull LiteralConcat name) {
